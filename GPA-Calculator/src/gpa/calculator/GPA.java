@@ -162,7 +162,12 @@ public class GPA extends Application{
         pane.getChildren().add(t);                             //REMEMBER TO ADD MINUS TEXT FIELD OPTION
         
     }
+    /*
+    @param list - list of children from the first page
+    @param stage and scene - primarystage and scene
     
+    Takes the student major data from the first page and creates a list from it
+    */
     public void processMajorData(ObservableList<Node> list, Stage primaryStage, Scene scene){
           primaryStage.setScene(scene);
           for(Node n: list){
@@ -174,7 +179,14 @@ public class GPA extends Application{
           
           
     }
+    /*
+    @param window - VBOX from the edit page
+    @param semesterCounter - a counter so we can make Semester titles
+    @param buttons - so we move the buttons.
     
+    Adds a Semester to the edit page. 
+    So adds a semester title, plus 3 empty courses, and moves the buttons accordingly.
+    */
     public void addSemester(VBox window, Integer semesterCounter, Button button, Button button2){
         window.getChildren().remove(button);
         window.getChildren().remove(button2);
@@ -223,8 +235,13 @@ public class GPA extends Application{
         pane.add(button, 2, counter + 2);
     }
    
+    /*
+    @param list - Children from the main edit page
+    @param mainPane - mainPane
+    @param scene - Vbox from that page
+    */
     public void processData(ObservableList<Node> list, BorderPane mainPane, VBox scene){
-          courses.clear();
+          courses.clear();                              //Begin with an empty list of courses
           scene.getChildren().clear();
            ObservableList<Node> two = mainPane.getChildren();
            if(two.size() > 1)
@@ -300,23 +317,10 @@ public class GPA extends Application{
            Button semesterBreakdown = new Button("View Breakdown");
           scene.getChildren().add(semesterBreakdown);
           
-           // displayScreenThree(display);                  // DISPLAYS THE SCREEN THREE< CHANGING TO LOWER PANE > 
           
     }
     
-    public void displayScreenThree(VBox display){
-          Label cumLabel = new Label("Cum GPA: " + calculateGPA(courses));
-          cumLabel.setFont(new Font("Arial", 20));
-          display.getChildren().add(cumLabel);
-          
-          if(!(courses.isEmpty()))
-            semesterBreakDown(display);
-          
-          Button backToEdit = new Button("Edit/Add Courses");
-          display.getChildren().add(backToEdit);
-          
-    }
-    
+
     public void semesterBreakDown(VBox display){
         //Need semester Label
             // 1 Course Label per Course for all courses in semester.
