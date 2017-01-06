@@ -49,44 +49,56 @@ public class GPA extends Application{
     
     @Override
     public void start(Stage primaryStage) throws Exception{
-        primaryStage.setTitle("My GPA");
+       primaryStage.setTitle("My GPA");
        File file = new File("GPASaveState.txt");
-        if(file.isFile() && file.length() != 0)
+
+       if(file.isFile() && file.length() != 0)                //If you have a Save State, load it.
            createList(file, primaryStage);
-        else
-            initWindow(primaryStage);
+       else                                                   // Otherwise initialize first window
+            initWindow(primaryStage); 
          
-        primaryStage.show();
+       primaryStage.show();
         
     }
     public void initWindow(Stage primaryStage){
         Scene main, welcome;
+        
+        //THE FOLLOWING BLOCK SETS UP THE FIRST PAGE A VIEWER WOULD SEE, WHATS YOUR MAJOR PAGE
         Pane one = new Pane();
-        //Prompt Major Label
+       
         Label prompt1 = new Label("What is your major?");   
         prompt1.setFont(new Font("Arial", 20));
         prompt1.setTranslateX(50);                      // LABEL X SHIFTED 50 
-        prompt1.setTranslateY(30);                                
+        prompt1.setTranslateY(30);        
+        
         TextField major = new TextField();
         major.setTranslateX(50);
-        major.setTranslateY(60);
+        major.setTranslateY(200/3);
+        
         Button addMajor = new Button("+");              //add hover over function "press to add another major"
-        addMajor.setTranslateX(110);
-        addMajor.setTranslateY(90);
+        addMajor.setTranslateX(50);
+        addMajor.setTranslateY(100);
         addMajor.setOnAction(e -> addOneMajor(one, addMajor));
+        
         Button cont = new Button("Continue");
         cont.setTranslateX(250);
-        cont.setTranslateY(90);
+        cont.setTranslateY(100);
         one.getChildren().addAll(prompt1, major, addMajor, cont);
+        
         welcome = new Scene(one, 350, 400);
         primaryStage.setScene(welcome);
         
         courses.clear();
         setUpEditScreen(cont, one, primaryStage);
-       
-        
     }
     
+   /*
+    @param cont - Button from previous screen that when clicked leads to this screen
+    @param one - Pane of previous screen
+    @param primaryStage - Stage
+    
+    Sets up edit screen
+    */
     public void setUpEditScreen(Button cont, Pane one, Stage primaryStage){
         Scene edit;
         VBox two = new VBox(10);
@@ -96,8 +108,9 @@ public class GPA extends Application{
         sp.setContent(two);
         BorderPane mainScreen = new BorderPane();
         mainScreen.setCenter(sp);
-        edit = new Scene(mainScreen, 350, 500);
-        if(courses.isEmpty())
+        
+        edit = new Scene(mainScreen, 380, 500);
+
             cont.setOnAction(e -> 
                  processMajorData(one.getChildren(), primaryStage, edit)
              );
@@ -130,7 +143,12 @@ public class GPA extends Application{
     public void fillEdit(VBox edit){
         //Fills edit screen with loaded courses
     }
+    /*
+    @param pane - the pane set in method initWindow for the first window
+    @param button - the button that adds a major that page
     
+    Adds major textfields and shifts things down
+    */
     public void addOneMajor(Pane pane, Button button){
         TextField t = new TextField();
         int counter = 0;
@@ -139,8 +157,8 @@ public class GPA extends Application{
                 counter++;
         }
         t.setTranslateX(50);
-        t.setTranslateY(30*(2+counter));
-        button.setTranslateY(30*(3+counter));                  //MAYBE ADD CAP TO 3 MAJORS.
+        t.setTranslateY((100/3)*(2+counter));
+        button.setTranslateY((100/3)*(3+counter));                  //MAYBE ADD CAP TO 3 MAJORS.
         pane.getChildren().add(t);                             //REMEMBER TO ADD MINUS TEXT FIELD OPTION
         
     }
