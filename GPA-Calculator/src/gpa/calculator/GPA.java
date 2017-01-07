@@ -241,49 +241,46 @@ public class GPA extends Application{
     @param scene - Vbox from that page
     */
     public void processData(ObservableList<Node> list, BorderPane mainPane, VBox scene){
-          courses.clear();                              //Begin with an empty list of courses
-          scene.getChildren().clear();
-           ObservableList<Node> two = mainPane.getChildren();
-           if(two.size() > 1)
-               two.remove(two.size() - 1);
+        courses.clear();                              //Begin with an empty list of courses
+        scene.getChildren().clear();
+        ObservableList<Node> two = mainPane.getChildren();
+        if(two.size() > 1)
+            two.remove(two.size() - 1);
            
-          ArrayList<Integer> courseSemCount = new ArrayList<Integer>();
+        ArrayList<Integer> courseSemCount = new ArrayList<Integer>();
           
-          //primaryStage.setScene(scene);
-          mainPane.setBottom(scene);
-          ArrayList<TextField> TFList = new ArrayList<TextField>();
-          ArrayList<String> gradeList = new ArrayList<String>();
+         //primaryStage.setScene(scene);
+        mainPane.setBottom(scene);
+        ArrayList<TextField> TFList = new ArrayList<TextField>();
+        ArrayList<String> gradeList = new ArrayList<String>();
           
-          for(Node n: list){
-              if(n instanceof GridPane){
-                  int quickCount = 0;
-                  GridPane n2 = (GridPane)n; //Cast
-                  ObservableList<Node> list2 = n2.getChildren();
-                  for(Node n3: list2)
+        for(Node n: list){
+            if(n instanceof GridPane){
+                int quickCount = 0;
+                GridPane n2 = (GridPane)n; //Cast
+                ObservableList<Node> list2 = n2.getChildren();
+                for(Node n3: list2)
                     if(n3 instanceof TextField){
-                          TextField t = (TextField)n3;
-                          if(!(t.getText().trim().isEmpty())){
+                        TextField t = (TextField)n3;
+                        if(!(t.getText().trim().isEmpty())){
                             quickCount++;
                             TFList.add(t);
-                          }
+                        }
                     } else if(n3 instanceof ChoiceBox) {
                         ChoiceBox<String> n4 = (ChoiceBox)n3;
-                        if(!n4.getSelectionModel().isEmpty()){
+                        if(!n4.getSelectionModel().isEmpty())
                             gradeList.add(n4.getValue());
-                        }
                     }
-                  courseSemCount.add(quickCount/2); // how many classes were taken that semester, for save state purpose.
-              }
-          }
-          
-          //ERROR HANDLING ON EMPTY TEXTFIELDS ** NEEDED.
+                  
+                courseSemCount.add(quickCount/2); // how many classes were taken that semester, for save state purpose.
+            }
+        }
           
           // FOLLOWING CODE CREATES A COURSE FOR EACH LINE IN THE GRIDPANE, GIVEN !EMPTY CELLS.
-          int temp = 0;
-          double lastNum = 0;
-          if(courses.isEmpty()){
-          for(int i = 0; i < TFList.size(); i += 2){  
-              
+        int temp = 0;
+        double lastNum = 0;
+        if(courses.isEmpty()){
+            for(int i = 0; i < TFList.size(); i += 2){  
                  double j = i/2.0;
                  if(j == (double)courseSemCount.get(temp) + lastNum){
                      temp++; 
@@ -292,35 +289,31 @@ public class GPA extends Application{
                  
                  Course c = new Course(TFList.get(i).getText(), gradeList.get(i/2), Integer.parseInt(TFList.get(i+1).getText()), temp+1);
                  courses.add(c);
-          }
-          
-
-          Writer writer = null;
-
-            try {
-                
-                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("GPASaveState.txt"), "utf-8"));
-                 writer.write(majorList.toString());
-                 writer.write("\n");
-                 writer.write(courses.toString());
-            } catch (IOException ex) {
-                 // report
-            } finally {
-                try {writer.close();} catch (Exception ex) {/*ignore*/}
             }
-          }
+            writeToSaveState();
+        }
           
           Label cumLabel = new Label("Cum GPA: " + calculateGPA(courses));
           cumLabel.setFont(new Font("Arial", 20));
           scene.getChildren().add(cumLabel);
           
            Button semesterBreakdown = new Button("View Breakdown");
-          scene.getChildren().add(semesterBreakdown);
-          
-          
+           scene.getChildren().add(semesterBreakdown);
     }
     
-
+    public void writeToSaveState(){
+        Writer writer = null;
+        try {         
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("GPASaveState.txt"), "utf-8"));
+            writer.write(majorList.toString());
+            writer.write("\n");
+            writer.write(courses.toString());
+        } catch (IOException ex) {
+                 // report
+        } finally {
+                try {writer.close();} catch (Exception ex) {/*ignore*/}
+        }
+    }
     public void semesterBreakDown(VBox display){
         //Need semester Label
             // 1 Course Label per Course for all courses in semester.
@@ -339,7 +332,13 @@ public class GPA extends Application{
             }
         }
     }
+    /*
+    @param courses - list of courses set by processData() method
     
+    Simple part lol Calculates GPA 
+    
+    @return double current GPA
+    */
     public double calculateGPA(ArrayList<Course> courses){
         int totalCH = 0;
         double GPA = 0;
