@@ -169,6 +169,7 @@ public class GPA extends Application{
         calcAndCont.setOnAction(e->
                 processDataFromEmpty(two.getChildren(), mainScreen, sp2)
          );
+        //CREATES TEXT FIELDS 
         courses.get(0).semester = 0;
        for(int i = 1; i < courses.size(); i++){
            if(courses.get(i).semester != courses.get(i-1).semester){      //FOR EACH SEMESTER
@@ -188,12 +189,10 @@ public class GPA extends Application{
                     x = 0;
                 else
                     x = i;
-                System.out.println("HOW MANY RUNS?");
                 for(x = x ; x < courses.size() - 1; x++){
                     if(courses.get(x).semester != courses.get(x+1).semester)
                         break;
                     counter++;
-                    System.out.println(counter);
                     if(counter >= 3){
                         addOneCourse(temp,tempButton);
                     }
@@ -201,9 +200,39 @@ public class GPA extends Application{
            }
        }
        
-            
-              
-              
+       //SET TEXT FIELD VALUES
+       ObservableList<Node> list2 = two.getChildren();
+       ArrayList<TextField> TFList = new ArrayList<TextField>();
+       ArrayList<ChoiceBox> CBList = new ArrayList<ChoiceBox>();
+       
+       
+       for(Node n: list2)
+           if(n instanceof GridPane){
+               GridPane newSem = (GridPane)n;
+               ObservableList<Node> list3 = newSem.getChildren();
+               for(Node n2: list3)
+                    if(n2 instanceof TextField){
+                        TFList.add((TextField)n2);
+                    }
+                    else if(n2 instanceof ChoiceBox)
+                        CBList.add((ChoiceBox)n2);
+           }
+           
+  
+       for(int i = 0; i < TFList.size() - 1; i+=2){
+           if((i/2) == courses.size())
+               break;
+           
+           TextField first = TFList.get(i);
+           first.setText(courses.get(i/2).courseName);
+           
+           ChoiceBox middle = CBList.get(i/2);
+           middle.setValue(courses.get(i/2).courseLetterGrade);
+           
+           TextField second = TFList.get(i+1);
+           second.setText(Integer.toString(courses.get(i/2).courseCredits));
+           
+       }
     }
     /*
     @param pane - the pane set in method initWindow for the first window
