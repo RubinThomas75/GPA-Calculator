@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+    Author: Rubin Thomas
  */
  
 package gpa.calculator;
@@ -42,7 +40,8 @@ public class GPA extends Application{
     Integer semesterCounter = 1;
     ArrayList<Course> courses = new ArrayList<Course>();
     List<String> possGrades = Arrays.asList("A", "A-", "B+", "B", "B-", "C+", "C", "C-", "F");
-          
+    boolean fromLoad = false;                  //If from SaveState
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -110,11 +109,15 @@ public class GPA extends Application{
         mainScreen.setCenter(sp);
         
         edit = new Scene(mainScreen, 380, 500);
-
+        
+        if(fromLoad){
+            primaryStage.setScene(edit);
+        }else{
             cont.setOnAction(e -> 
                  processMajorData(one.getChildren(), primaryStage, edit)
              );
-        
+        }
+        fromLoad = false;
         // WINDOW 2, EDIT SCREEN
         //This adds a course // 
         
@@ -132,16 +135,16 @@ public class GPA extends Application{
         VBox sp2 = new VBox(10);
        // main = new Scene(sp2, 350, 350);
         
-        if(!courses.isEmpty())
-            fillEdit(two);
         
         calcAndCont.setOnAction(e->
-                processData(two.getChildren(), mainScreen, sp2)
+                processDataFromEmpty(two.getChildren(), mainScreen, sp2)
          );
     }
     
-    public void fillEdit(VBox edit){
-        //Fills edit screen with loaded courses
+    public void fillEdit(Stage primaryStage){
+       Button blankButton = new Button();
+       Pane blankPane = new Pane();
+       setUpEditScreen(blankButton, blankPane, primaryStage);
     }
     /*
     @param pane - the pane set in method initWindow for the first window
@@ -240,8 +243,8 @@ public class GPA extends Application{
     @param mainPane - mainPane
     @param scene - Vbox from that page
     */
-    public void processData(ObservableList<Node> list, BorderPane mainPane, VBox scene){
-        courses.clear();                              //Begin with an empty list of courses
+    public void processDataFromEmpty(ObservableList<Node> list, BorderPane mainPane, VBox scene){
+             courses.clear();                       //Begin with an empty list of courses
         scene.getChildren().clear();
         ObservableList<Node> two = mainPane.getChildren();
         if(two.size() > 1)
@@ -358,6 +361,7 @@ public class GPA extends Application{
     }
     
     public void createList(File file, Stage primaryStage) throws FileNotFoundException, IOException{
+        fromLoad = true;                           //Reading from file
         BufferedReader br = new BufferedReader(new FileReader(file));
         String majors = br.readLine(); // What if you dont input majors?
         String readCourses = br.readLine(); 
@@ -377,6 +381,7 @@ public class GPA extends Application{
              courses.add(c);
          }
          
+        fillEdit(primaryStage);
         /*
         VBox three = new VBox(10);
         ScrollPane sp2 = new ScrollPane();
