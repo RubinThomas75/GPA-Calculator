@@ -1,2 +1,2 @@
 [AMS]
-[AMS1 A 4 1, AMS2 B 3 1, AMS5 C 3 2]
+[test1 A 3 1, test2 B 3 1, test3 C+ 3 1, test4 A 2 1, test1 A 3 2, test2 B+ 2 2, test3 B+ 3 2, test4 A 4 2, test5 A 3 3]

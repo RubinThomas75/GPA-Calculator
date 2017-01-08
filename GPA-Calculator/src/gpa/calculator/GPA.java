@@ -110,14 +110,10 @@ public class GPA extends Application{
         
         edit = new Scene(mainScreen, 380, 500);
         
-        if(fromLoad){
-            primaryStage.setScene(edit);
-        }else{
-            cont.setOnAction(e -> 
+             cont.setOnAction(e -> 
                  processMajorData(one.getChildren(), primaryStage, edit)
              );
-        }
-        fromLoad = false;
+        
         // WINDOW 2, EDIT SCREEN
         //This adds a course // 
         
@@ -142,9 +138,72 @@ public class GPA extends Application{
     }
     
     public void fillEdit(Stage primaryStage){
-       Button blankButton = new Button();
-       Pane blankPane = new Pane();
-       setUpEditScreen(blankButton, blankPane, primaryStage);
+         Scene edit;
+        VBox two = new VBox(10);
+        ScrollPane sp = new ScrollPane(); 
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setContent(two);
+        BorderPane mainScreen = new BorderPane();
+        mainScreen.setCenter(sp);
+        
+        edit = new Scene(mainScreen, 380, 500);
+        
+        // WINDOW 2, EDIT SCREEN
+        //This adds a course // 
+        
+        Button addSemButton = new Button("+");
+        Button calcAndCont = new Button("Done Editing");
+        calcAndCont.setTranslateX(10);
+        addSemButton.setTranslateX(10);
+        addSemButton.setTranslateY(0); // This needs to be fixed
+        
+        addSemButton.setOnAction(e-> 
+                addSemester(two, semesterCounter++, addSemButton, calcAndCont)
+        );
+                
+        VBox sp2 = new VBox(10);
+       // main = new Scene(sp2, 350, 350);
+        
+        primaryStage.setScene(edit);
+        calcAndCont.setOnAction(e->
+                processDataFromEmpty(two.getChildren(), mainScreen, sp2)
+         );
+        courses.get(0).semester = 0;
+       for(int i = 1; i < courses.size(); i++){
+           if(courses.get(i).semester != courses.get(i-1).semester){      //FOR EACH SEMESTER
+                GridPane temp = addSemester(two, semesterCounter++, addSemButton, calcAndCont);
+                //GET ADD COURSE BUTTON
+                Button tempButton = new Button();
+                ObservableList<Node> list = temp.getChildren();
+                for(Node c: list){
+                    if(c instanceof Button)
+                        tempButton = (Button)c;
+                }
+                courses.get(0).semester = 1; //RESET THIS
+                //FOR EACH EXTRA COURSE IN THIS SEMESTER ( > 3) PRESS THE COURSE BUTTON!
+                int counter = 0;
+                int x = 0;
+                if(i == 1)
+                    x = 0;
+                else
+                    x = i;
+                System.out.println("HOW MANY RUNS?");
+                for(x = x ; x < courses.size() - 1; x++){
+                    if(courses.get(x).semester != courses.get(x+1).semester)
+                        break;
+                    counter++;
+                    System.out.println(counter);
+                    if(counter >= 3){
+                        addOneCourse(temp,tempButton);
+                    }
+                }
+           }
+       }
+       
+            
+              
+              
     }
     /*
     @param pane - the pane set in method initWindow for the first window
@@ -190,7 +249,7 @@ public class GPA extends Application{
     Adds a Semester to the edit page. 
     So adds a semester title, plus 3 empty courses, and moves the buttons accordingly.
     */
-    public void addSemester(VBox window, Integer semesterCounter, Button button, Button button2){
+    public GridPane addSemester(VBox window, Integer semesterCounter, Button button, Button button2){
         window.getChildren().remove(button);
         window.getChildren().remove(button2);
         GridPane semester = new GridPane();
@@ -218,6 +277,7 @@ public class GPA extends Application{
         window.getChildren().add(button2);
         //window.getChildren().lastIndexOf(semester);
         //Add another course button
+        return semester;
     }
     
     public void addOneCourse(GridPane pane, Button button){
